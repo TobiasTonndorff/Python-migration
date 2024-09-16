@@ -31,7 +31,7 @@ def get_table_schema(source_connection, table_name):
     cursor.execute(f"SHOW CREATE TABLE {table_name}")
     result = cursor.fetchone()
     cursor.close()
-    return result[1]  # Returns the CREATE TABLE statement
+    return result[1]  
 
 def create_table_in_target(target_connection, create_table_query):
     """Create a table in the target database using the source schema."""
@@ -77,14 +77,14 @@ def migrate_data(source_connection, target_connection, table_names):
     for table_name in table_names:
         print(f"Migrating data from table: {table_name}")
         
-        # Check if the table exists in the target database
+        
         if not check_table_exists(target_connection, table_name):
             print(f"Table {table_name} does not exist in target DB, creating it...")
             # Get the source table schema and create it in the target DB
             create_table_query = get_table_schema(source_connection, table_name)
             create_table_in_target(target_connection, create_table_query)
         
-        # Fetch and migrate data
+        
         data = fetch_data_from_source(source_connection, table_name)
         if data:
             insert_data_into_target(target_connection, table_name, data)
@@ -92,7 +92,7 @@ def migrate_data(source_connection, target_connection, table_names):
             print(f"No data available in the {table_name} table")
 
 def main():
-    # Source and target database details
+    # alter this for your source and target databases
     source_db = {
         "host": "source_host",
         "user": "source_user",
@@ -107,17 +107,17 @@ def main():
         "database": "target_db"
     }
 
-    # List of tables to migrate
+    
     table_names = ["table1", "table2", "table3"]  # Specify the tables you want to migrate
 
-    # Create connections to the source and target databases
+   
     source_connection = create_connection(source_db["host"], source_db["user"], source_db["passwd"], source_db["database"])
     target_connection = create_connection(target_db["host"], target_db["user"], target_db["passwd"], target_db["database"])
 
     if source_connection and target_connection:
         migrate_data(source_connection, target_connection, table_names)
 
-    # Close the connections
+    
     if source_connection:
         source_connection.close()
     if target_connection:
